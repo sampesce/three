@@ -1,6 +1,5 @@
 
 
-
  
  
 “The Bird Game” Plan
@@ -86,7 +85,7 @@ The purpose of this document is to provide information about the Bird Game proje
 •   	Identify schedules and activities to be performed.
 
 1.2 Background
- The goal is to make a game using the three.js library. The game will begin with a start screen
+ The goal is to make a game using the raphael.js library. The game will begin with a start screen
 that will have options to view other pages such as directions, sound, and start; pressing start will begin the game loop. The game will be viewed from a side angle, with the player being at a probably fixed x position (it might move slightly at times but probably not.) The player will be “gliding” and will have a constant downward force applied to him/her. By hitting a button, an upward force will be applied to the player which will overcome the downward force, and will allow the player to attempt to maintain level flight. The force application will take some adjusting because the  upward force will probably have to be removed slowly/incrementally so that the player doesn’t drop too suddenly.
 
 Aside from flying, the player will try to dodge oncoming obstacles that will be instantiated on
@@ -107,7 +106,7 @@ Kazuru Takase
 There are no risks that will cause adverse events in this project. We will not lose money or cause disruption. The only issue there will be is just the coding of the program. The worst that can happen is when the game program crashes. 
 
 4. Hardware and Software Requirements
-raphaeljs.min.js, possibly backbone.js too
+raphael.js, possibly backbone.js too
 5. Wireframe
 
 http://i127.photobucket.com/albums/p149/cloudless_skies/birdgamewireframe_zps05fa3737.jpg
