@@ -1,0 +1,114 @@
+
+
+ 
+ 
+“The Bird Game” Plan
+Product001
+ 
+ 
+ 
+ 
+ 
+ 
+<Prof. K Willaim>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Table of Contents
+1. Introduction. 3
+1.1 Foreword. 3
+1.2 Background. 3
+2. Project Organization. 3
+2.1 Development Model 3
+2.2 Project Team.. 4
+3. Risk Analysis. 5
+4. Hardware and Software Requirements. 5
+5. Wireframe. 6
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. Introduction
+1.1 Foreword
+The purpose of this document is to provide information about the Bird Game project. It will include the information, risks, project team, and the visual aspect of the program. This plan will:
+•     Provide a general product description.
+•   	Identify required resources.
+•   	Identify schedules and activities to be performed.
+
+1.2 Background
+ The goal is to make a game using the raphael.js library. The game will begin with a start screen
+that will have options to view other pages such as directions, sound, and start; pressing start will begin the game loop. The game will be viewed from a side angle, with the player being at a probably fixed x position (it might move slightly at times but probably not.) The player will be “gliding” and will have a constant downward force applied to him/her. By hitting a button, an upward force will be applied to the player which will overcome the downward force, and will allow the player to attempt to maintain level flight. The force application will take some adjusting because the  upward force will probably have to be removed slowly/incrementally so that the player doesn’t drop too suddenly.
+
+Aside from flying, the player will try to dodge oncoming obstacles that will be instantiated on
+the right side of the screen. The objects will move left at a random speed between two fixed speeds (so that they don’t move too quickly) and will be instantiated at random y positions. The player will have to attempt to dodge these oncoming obstacles in order to stay aloft; the obstacles will be changing their x position rather than the player, which will create the illusion of player-movement. The objective will be to stay gliding as long as possible, which will cause your score to go up. If the player flies to high or low, they will also lose. After dying, the player will be returned to the start screen where they can choose to play again.
+
+2. Project Organization
+2.1 Development Model
+
+
+2.2 Project Team
+The table below lists the members of the Bird Game project team.  The project team consists of:
+ 
+Samuel Pesce
+Kazuru Takase
+ 
+3. Risk Analysis
+3.1 Risk Analysis
+There are no risks that will cause adverse events in this project. We will not lose money or cause disruption. The only issue there will be is just the coding of the program. The worst that can happen is when the game program crashes. 
+
+4. Hardware and Software Requirements
+raphael.js, possibly backbone.js too
+5. Wireframe
+
+http://i127.photobucket.com/albums/p149/cloudless_skies/birdgamewireframe_zps05fa3737.jpg
+
+The design pattern that could be used in this project is prototype in order to duplicate the obstacles. Memento pattern might be to return the game its original state if the bird is killed.
