@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" /></meta>
+        <title>
+            THE BIRD GAME
+        </title>
+        <script src="raphael.js"></script>
+        <link href="canvas.css" type="text/css" rel="stylesheet"></link>
+    </head>
+    <body>
+        <div id="canvas"></div>
+        <script type="text/javascript">
+            window.onload = function (){
+                var paper = Raphael(0, 0, 1200, 800);
+                //sky
+                var gameStart = paper.image("gameStart.png",0,0,1200,800);
+                
+                //START, INSTRUCTION, SETTING, SCORE BUTTONS
+                
+                //SCORE BUTTON
+                var button2 = paper.set();
+                var background2 = paper.rect(150, 525, 100, 50, 10)
+                    .attr({
+                        fill: 'white'
+                    });
+                var label2 = paper.text(200, 550, "SCORE");
+        
+                button2.push(background2);
+                button2.push(label2);
+    
+                button2.attr({
+                    cursor: 'pointer',
+                }).mouseover(function() { 
+                    background2.attr('fill', 'blue');
+                }).mouseout(function() {
+                    background2.attr('fill', 'white');
+                }).mouseup(function() {
+                    //insert score sheet
+                });
+                
+                //INSTRUCTION BUTTON
+                var button3 = paper.set();
+                var background3 = paper.rect(150, 350, 100, 50, 10)
+                    .attr({
+                        fill: 'white'
+                    });
+                var label3 = paper.text( 200, 375, "INSTRUCTION");
+        
+                button3.push(background3);
+                button3.push(label3);
+    
+                button3.attr({
+                    cursor: 'pointer',
+                }).mouseover(function() { 
+                    background3.attr('fill', 'blue');
+                }).mouseout(function() {
+                    background3.attr('fill', 'white');
+                }).mouseup(function() {
+                    //insert code here
+                    var paper = Raphael(0, 0, 1200, 800);
+                    var instruction = paper.text( 200, 450, "This is where you write the instruction.")
+                        .attr ({
+                           "font-size": "36px"
+                        });
+                    
+                });
+                    
+                    
+                    
+                //START BUTTON
+                var button = paper.set();
+                var background = paper.rect(150, 250, 100, 50, 10)
+                    .attr({
+                        fill: 'white'
+                    });
+                var label = paper.text( 200, 275, "START");
+        
+                button.push(background);
+                button.push(label);
+    
+                button.attr({
+                    cursor: 'pointer',
+                }).mouseover(function() { 
+                    background.attr('fill', 'blue');
+                }).mouseout(function() {
+                    background.attr('fill', 'white');
+                }).mouseup(function() {
+
+                var paper = Raphael(0, 0, 800, 600);
+                //sky
+                paper.rect(0,0,800,600)
+                    .attr({
+                        stroke:  "none",
+                        fill : "90-#8ad-#0b2f5b"
+                        });
+                //cloud
+                paper.rect(0,0,800,50)
+                    .attr({
+                        fill: "white"
+                    });
+                //earth
+                paper.rect(0,550,800,50)
+                    .attr({
+                        fill: "#53472e"
+                    });
+                //img of bird
+                var bird= paper.image("bird.png",137,81,133,81);
+                //boulder
+                paper.circle(300,300,40)
+                    .attr({
+                       fill: "orange" 
+                    });             
+                });
+                
+                //stopwatch
+                paper.text('400','800', timer() );
+
+                
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+   
+            }
+        </script>
+    </body>
+</html>
