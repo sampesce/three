@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Game</title>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="raph.js"></script>
+<style>
+
+</style>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+
+var paper = new Raphael($('#canvas'), 0, 0);
+var c = paper.image("sky.jpg", 0, 0, 1000, 1000);
+//paper.attr("fill", "#9cf");
+paper.setSize(1000,1000);
+var circle = paper.circle(100, 50, 30); 
+circle.attr({fill: '#9cf', stroke: '#ddd', 'stroke-width': 5});
+
+
+
+
+//circle.transform("t" + y + ",1");
+
+var goingUp = false;
+
+var counter = 0;
+
+$('body').click( function(){
+
+	//canMove = false;
+	
+	//circle.translate( 0 , -5);
+
+	//canMove = true;
+	
+	goingUp = true;
+	
+});
+
+
+
+setInterval(function(){
+
+	if(counter > 5){
+		goingUp = false;
+		counter = 0;
+	}
+
+	if(!goingUp){
+
+		circle.translate( 2 , 3);
+		
+
+	}
+	else{
+		circle.translate( 2 , -5);
+		counter++;
+	}
+},50);
+
+
+
+
+//circle.transform("t0,100");
+	
+ 
+});
+
+</script>
+</head>
+<body>
+
+<div id="canvas"></div>
+
+
+</body>
+</html>

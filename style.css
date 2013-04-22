@@ -1,0 +1,50 @@
+body {  
+    background: url(back.png) repeat scroll;  
+    margin: 0;  
+    padding: 0;  
+} 
+header {
+	background: url(head.png) repeat scroll;  
+    height:181px; 
+    margin: 0;  
+    padding: 0;
+
+}
+
+#lookUp{
+	display:inline-block;
+}
+#menu{
+	display:inline-block;
+}
+#forLookUp{
+	//display:inline-block;
+	display: none;
+
+}
+#forMenu{
+	//display:inline-block;
+	display:none;
+}
+#forLookUp2{
+	//display:inline-block;
+	display: none;
+
+}
+#forMenu2{
+	//display:inline-block;
+	display:none;
+}
+
+#admin_area{
+	display:none;
+}
+#custNum{
+
+}
+#itemNum{
+
+}
+#ordNum{
+
+}
