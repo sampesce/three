@@ -5,6 +5,8 @@
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="raph.js"></script>
+<script type="text/javascript" src="underscore.js"></script>
+<script type="text/javascript" src="backbone.js"></script>
 <style>
 
 </style>
@@ -14,12 +16,44 @@
 $(document).ready(function(){
 
 
+gameModel = Backbone.Model.extend({
+        defaults: {
+            name: 'Fetus',
+            age: 0
+        },
+        initialize: function(){
+            alert("Welcome to this world");
+            this.on("change:name", function(model){
+                var name = model.get("name"); // 'Stewie Griffin'
+                alert("Changed my name to " + name );
+            });
+        }
+});
+
+//gameModel.set({name: 'Stewie Griffin'});
+var enemies = [];
 var paper = new Raphael($('#canvas'), 0, 0);
-var c = paper.image("sky.jpg", 0, 0, 1000, 1000);
+var c = paper.image("background.png", 0, 0, 2400, 700);
 //paper.attr("fill", "#9cf");
-paper.setSize(1000,1000);
+paper.setSize(1200,700);
 var circle = paper.circle(100, 50, 30); 
 circle.attr({fill: '#9cf', stroke: '#ddd', 'stroke-width': 5});
+
+
+
+//console.log(paper._left);
+
+//paper._left = -2000;
+
+//console.log(paper._left);
+//c.attrs.x = -2000;
+//console.log(c);
+
+//c = paper.image("sky.jpg", -2000, 0, 1000, 1000);
+
+//paper.path('M-2000,0');
+
+
 
 
 
@@ -43,8 +77,61 @@ $('body').click( function(){
 });
 
 
+setInterval(function(){
+
+
+	var temp = paper.rect(500, 500, 100,100,0); 
+	temp.attr({fill: '#9cf', stroke: '#ddd', 'stroke-width': 5});
+	enemies.push(temp);
+	//console.log(enemies[0]);
+	
+	
+},4000);
+
 
 setInterval(function(){
+
+	
+	for(var i=0; i<enemies.length; i++){
+	
+		enemies[i].translate( -4,0);
+		enemies[i].attrs.x -= 4;
+		
+		if(enemies[i].attrs.x < -100){
+			//alert("gone");
+			//console.log(enemies[i]);
+			enemies[i].remove();
+			//console.log(enemies[i]);
+			enemies.splice(i,1);
+			//console.log(enemies[i]);
+		
+		}
+		if(Raphael.isBBoxIntersect(circle.getBBox(), enemies[i].getBBox())){
+			//alert("weeee");
+		}
+	
+	}
+
+	var i = c.attrs.x - 2;
+	//console.log(c.attrs.x);
+	
+	//paper.translate( 0 , 3);	
+	
+	c.attr({
+		x: i
+	});
+	
+	if( i < -1205){
+	
+		c.attr({
+			x: 0
+		});
+		
+		i=0;
+	
+	}
+	
+
 
 	if(counter > 5){
 		goingUp = false;
@@ -53,20 +140,17 @@ setInterval(function(){
 
 	if(!goingUp){
 
-		circle.translate( 2 , 3);
+		circle.translate( 0 , 3);
 		
 
 	}
 	else{
-		circle.translate( 2 , -5);
+		circle.translate( 0 , -5);
 		counter++;
 	}
 },50);
 
 
-
-
-//circle.transform("t0,100");
 	
  
 });
