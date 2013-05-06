@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Game</title>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" />
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="raph.js"></script>
+<script type="text/javascript" src="underscore.js"></script>
+<script type="text/javascript" src="backbone.js"></script>
+<script type="text/javascript" src="Arial_400.font.js"></script>
+<style>
+
+</style>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+$('#sound_element').html("<embed src='http://harp.njit.edu/~swp5/three/Call_to_Adventure.mp3' hidden=true autostart=true loop=true>");
+
+gameModel = Backbone.Model.extend({
+        defaults: {
+            name: 'Fetus',
+            age: 0
+        },
+        initialize: function(){
+            alert("Welcome to this world");
+            this.on("change:name", function(model){
+                var name = model.get("name"); // 'Stewie Griffin'
+                alert("Changed my name to " + name );
+            });
+        }
+});
+
+
+//gameModel.set({name: 'Stewie Griffin'});
+var circX;
+var circY;
+var goingUp = false;
+var counter = 0;
+var spawnId;
+var gameloopId;
+var checkId;
+var recentscores = [];
+var enemies = [];
+var speed = -4;
+var score = 0;
+var health = 100;
+var paper = new Raphael($('#canvas'), 0, 0);
+var c;
+/*
+var c = paper.image("background.png", 0, 0, 2400, 800);
+//paper.attr("fill", "#9cf");
+paper.setSize(1200,800);
+var circle = paper.circle(100, 50, 30); 
+circle.attr({fill: '#9cf', stroke: '#ddd', 'stroke-width': 5});
+
+//var txt = paper.print(1000, 50, "Score: " + score , paper.getFont("Arial"), 30).attr({fill: "#000"});
+var t = paper.text(1000, 50, "Score: " + score);
+var h = paper.text(50, 50, "Health: " + health);
+
+t.attr({ "font-size": 20, "font-family": "Arial, Helvetica, sans-serif" });
+h.attr({ "font-size": 20, "font-family": "Arial, Helvetica, sans-serif" });
+*/
+
+
+
+$('body').click( function(){
+
+	
+	goingUp = true;
+	
+});
+
+
+
+menu();
+//reset();
+//resume();
+
+
+
+
+function menu(){
+
+				paper.clear();
+				c = paper.image("menu.png", 0, 0, 1200, 800);
+				paper.setSize(1200,800);
+		
+                var button2 = paper.set();
+                var background2 = paper.rect(150, 525, 100, 50, 10)
+                    .attr({
+                        fill: 'white'
+                    });
+                var label2 = paper.text(200, 550, "SCORE");
+        
+                button2.push(background2);
+                button2.push(label2);
+    
+                button2.attr({
+                    cursor: 'pointer',
+                }).mouseover(function() { 
+                    background2.attr('fill', 'blue');
+                }).mouseout(function() {
+                    background2.attr('fill', 'white');
+                }).mouseup(function() {
+                    //THE SCORE SHEET
+                    var scoreSheet = paper.rect(0,0,1200,800)
+                        .attr ({
+                            fill:"black",
+                            opacity:"0.8",
+                        });
+                    var scoreTitle = paper.text( 600, 100, "SCORE SHEET" )
+                        .attr ({
+                           "font-size": "36px",
+                           "fill": "white",
+                        });
+                        
+                    //the close button
+                    var button6 = paper.set();
+                    var background6 = paper.rect(150, 525, 100, 50, 10)
+                        .attr({
+                            fill: 'white'
+                        });
+                    var label6 = paper.text( 200, 550, "CLOSE");
+                    button6.push(background6);
+                    button6.push(label6);
+                    button6.attr({
+                        cursor: 'pointer',
+                    }).mouseover(function() { 
+                        background6.attr('fill', 'blue');
+                    }).mouseout(function() {
+                        background6.attr('fill', 'white');
+                    }).mouseup(function() {
+                            scoreSheet.hide();
+                            scoreTitle.hide();
+                            button6.hide();
+                    });
+                });
+
+		
+                var button3 = paper.set();
+                var background3 = paper.rect(150, 350, 100, 50, 10)
+                    .attr({
+                        fill: 'white'
+                    });
+                var label3 = paper.text( 200, 375, "INSTRUCTION");
+        
+                button3.push(background3);
+                button3.push(label3);
+    
+                button3.attr({
+                    cursor: 'pointer',
+                }).mouseover(function() { 
+                    background3.attr('fill', 'blue');
+                }).mouseout(function() {
+                    background3.attr('fill', 'white');
+                }).mouseup(function() {
+		
+		            var instructionBG = paper.rect(100,100,1000,600)
+                        .attr ({
+                            fill:"black",
+                            opacity:"0.8",
+                        });
+                    var instructionText = paper.text( 600, 300, "Navigate through the \ncourse by clicking the MOUSE. \nAvoid the obstacles. \nScore increases the longer you survive. " )
+                        .attr ({
+                           "font-size": "36px",
+                           "fill": "white",
+                        });
+                        
+                    //the back button
+                    var button5 = paper.set();
+                    var background5 = paper.rect(150, 525, 100, 50, 10)
+                        .attr({
+                            fill: 'white'
+                        });
+                    var label5 = paper.text( 200, 550, "BACK");
+                    button5.push(background5);
+                    button5.push(label5);
+                    button5.attr({
+                        cursor: 'pointer',
+                    }).mouseover(function() { 
+                        background5.attr('fill', 'blue');
+                    }).mouseout(function() {
+                        background5.attr('fill', 'white');
+                    }).mouseup(function() {
+                        //function to hide the instruction box
+                            instructionBG.hide();
+                            instructionText.hide();
+                            button5.hide();
+                        
+                        });
+
+				});
+				
+				var button = paper.set();
+                var background = paper.rect(150, 250, 100, 50, 10)
+                    .attr({
+                        fill: 'white'
+                    });
+                var label = paper.text( 200, 275, "START");
+        
+                button.push(background);
+                button.push(label);
+    
+                button.attr({
+                    cursor: 'pointer',
+                }).mouseover(function() { 
+                    background.attr('fill', 'blue');
+                }).mouseout(function() {
+                    background.attr('fill', 'white');
+                }).mouseup(function() {
+                    
+					reset();
+					resume();
+                }); 
+
+
+
+}
+
+function stop(){
+
+		window.clearInterval(gameloopId);
+		window.clearInterval(spawnId);
+		window.clearInterval(checkId);
+		recentscores.unshift(score);
+		//reset();
+		//console.log(enemies);
+
+
+}
+
+function resume(){
+
+		spawnId = window.setInterval(spawn, 3500);
+		gameloopId = window.setInterval(gameloop, 50);
+		checkId = window.setInterval(check, 1000);
+
+
+}
+
+function reset(){
+
+		
+		health = 100;
+		score = 0;
+		counter = 0;
+		paper.clear();
+		enemies.length = 0;
+		c = paper.image("background.png", 0, 0, 2400, 800);
+		//paper.attr("fill", "#9cf");
+		paper.setSize(1200,800);
+		circle = paper.circle(100, 50, 30);
+		circX=100;
+		circY=50;
+		circle.attr({fill: '#9cf', stroke: '#ddd', 'stroke-width': 5});
+
+		//var txt = paper.print(1000, 50, "Score: " + score , paper.getFont("Arial"), 30).attr({fill: "#000"});
+		t = paper.text(1000, 50, "Score: " + score);
+		h = paper.text(50, 50, "Health: " + health);
+
+		t.attr({ "font-size": 20, "font-family": "Arial, Helvetica, sans-serif" });
+		h.attr({ "font-size": 20, "font-family": "Arial, Helvetica, sans-serif" });
+		//resume();
+		
+
+}
+
+function check(){
+
+	for(var i=0; i<enemies.length; i++){
+		if(Raphael.isBBoxIntersect(circle.getBBox(), enemies[i].getBBox())){
+			//alert("weeee");
+			health-=10;
+			score-=50;
+			//console.log("HIT");
+		}
+	}
+	
+	
+
+}
+
+function spawn(){
+
+	var randomnumber=Math.floor(Math.random()*700)
+	
+	var temp = paper.rect(1200, randomnumber, 100,150,0); 
+	temp.attr({fill: '#800', stroke: '#840', 'stroke-width': 5});
+	enemies.push(temp);
+	//console.log(enemies[0]);
+	
+	
+}
+
+
+function gameloop(){
+
+	//console.log(circle.attrs.cy);
+	if(score < 0 || health < 10 || circY > 800 || circX < 0){
+		
+		stop();
+		reset();
+		menu();
+		console.log(enemies);
+	
+	}
+
+
+
+	if( score > 500 ){
+		speed = -6;
+	}
+	if( score > 1000 ){
+		speed = -8;
+	}
+	if( score > 1500 ){
+		speed = -9;
+	}
+	if( score > 2000 ){
+		speed = -12;
+	}
+	
+	for(var i=0; i<enemies.length; i++){
+	
+		enemies[i].translate( speed,0);
+		enemies[i].attrs.x += speed;
+		
+		if(enemies[i].attrs.x < -100){
+			//alert("gone");
+			//console.log(enemies[i]);
+			enemies[i].remove();
+			//console.log(enemies[i]);
+			enemies.splice(i,1);
+			//console.log(enemies[i]);
+		
+		}
+		if(Raphael.isBBoxIntersect(circle.getBBox(), enemies[i].getBBox())){
+			//alert("weeee");
+			//health-=10;
+			//score-=50;
+			//console.log("HITZ");
+		}
+	
+	}
+
+
+
+	if(counter > 8){
+		goingUp = false;
+		counter = 0;
+	}
+
+	if(!goingUp){
+
+		circle.translate( -2 , 5);
+		circX -=2;
+		circY +=5;
+		//circle.attrs.cy += 5;
+		//circle.attrs.cx -= 2;
+		
+		var j = c.attrs.x - 2;
+			
+	
+		c.attr({
+			x: j
+		});
+		
+		if( j < -1200){
+		
+			c.attr({
+				x: 0
+			});
+			
+			j=0;
+		
+		}
+		
+
+	}
+	else{
+		circle.translate( 4 , -7);
+		circX +=4;
+		circY -=7;
+		//circle.attrs.cy -= 7;
+		//circle.attrs.cx += 4;
+		
+		var i = c.attrs.x - 4;
+		
+	//console.log(c.attrs.x);
+	
+	//paper.translate( 0 , 3);	
+	
+		c.attr({
+			x: i
+		});
+		
+		if( i < -1200){
+		
+			c.attr({
+				x: 0
+			});
+			
+			i=0;
+		
+		}
+		counter++;
+	}
+	t.attr('text','Score: ' + score);
+	h.attr('text','Health: ' + health);
+	score++;
+}
+
+
+	
+ 
+});
+
+</script>
+</head>
+<body>
+
+<div id="canvas"></div>
+<div id="sound_element"></div>
+
+
+</body>
+</html>

@@ -7,6 +7,7 @@
 <script type="text/javascript" src="raph.js"></script>
 <script type="text/javascript" src="underscore.js"></script>
 <script type="text/javascript" src="backbone.js"></script>
+<script type="text/javascript" src="Arial_400.font.js"></script>
 <style>
 
 </style>
@@ -15,6 +16,7 @@
 
 $(document).ready(function(){
 
+$('#sound_element').html("<embed src='http://harp.njit.edu/~swp5/three/Call_to_Adventure.mp3' hidden=true autostart=true loop=false>");
 
 gameModel = Backbone.Model.extend({
         defaults: {
@@ -30,35 +32,34 @@ gameModel = Backbone.Model.extend({
         }
 });
 
+Array.prototype.remove = function(from, to) {
+  var rest = this.slice((to || from) + 1 || this.length);
+  this.length = from < 0 ? this.length + from : from;
+  return this.push.apply(this, rest);
+};
+
 //gameModel.set({name: 'Stewie Griffin'});
+var recentscores = [];
 var enemies = [];
+var speed = -4;
+var score = 0;
+var health = 100;
 var paper = new Raphael($('#canvas'), 0, 0);
-var c = paper.image("background.png", 0, 0, 2400, 700);
+var c = paper.image("background.png", 0, 0, 2400, 800);
 //paper.attr("fill", "#9cf");
-paper.setSize(1200,700);
+paper.setSize(1200,800);
 var circle = paper.circle(100, 50, 30); 
 circle.attr({fill: '#9cf', stroke: '#ddd', 'stroke-width': 5});
 
+//var txt = paper.print(1000, 50, "Score: " + score , paper.getFont("Arial"), 30).attr({fill: "#000"});
+var t = paper.text(1000, 50, "Score: " + score);
+var h = paper.text(50, 50, "Health: " + health);
 
-
-//console.log(paper._left);
-
-//paper._left = -2000;
-
-//console.log(paper._left);
-//c.attrs.x = -2000;
-//console.log(c);
-
-//c = paper.image("sky.jpg", -2000, 0, 1000, 1000);
-
-//paper.path('M-2000,0');
+t.attr({ "font-size": 20, "font-family": "Arial, Helvetica, sans-serif" });
+h.attr({ "font-size": 20, "font-family": "Arial, Helvetica, sans-serif" });
 
 
 
-
-
-
-//circle.transform("t" + y + ",1");
 
 var goingUp = false;
 
@@ -66,36 +67,122 @@ var counter = 0;
 
 $('body').click( function(){
 
-	//canMove = false;
-	
-	//circle.translate( 0 , -5);
-
-	//canMove = true;
 	
 	goingUp = true;
 	
 });
 
 
-setInterval(function(){
+var spawnId;
+var gameloopId;
+var checkId;
 
 
-	var temp = paper.rect(500, 500, 100,100,0); 
-	temp.attr({fill: '#9cf', stroke: '#ddd', 'stroke-width': 5});
+resume();
+
+
+
+function stop(){
+
+		window.clearInterval(gameloopId);
+		window.clearInterval(spawnId);
+		window.clearInterval(checkId);
+		recentscores.unshift(score);
+		//reset();
+		//console.log(enemies);
+
+
+}
+
+function resume(){
+
+		spawnId = window.setInterval(spawn, 3500);
+		gameloopId = window.setInterval(gameloop, 50);
+		checkId = window.setInterval(check, 1000);
+
+
+}
+
+function reset(){
+
+		
+		health = 100;
+		score = 0;
+		counter = 0;
+		paper.clear();
+		enemies.length = 0;
+		c = paper.image("background.png", 0, 0, 2400, 800);
+		//paper.attr("fill", "#9cf");
+		paper.setSize(1200,800);
+		circle = paper.circle(100, 50, 30); 
+		circle.attr({fill: '#9cf', stroke: '#ddd', 'stroke-width': 5});
+
+		//var txt = paper.print(1000, 50, "Score: " + score , paper.getFont("Arial"), 30).attr({fill: "#000"});
+		t = paper.text(1000, 50, "Score: " + score);
+		h = paper.text(50, 50, "Health: " + health);
+
+		t.attr({ "font-size": 20, "font-family": "Arial, Helvetica, sans-serif" });
+		h.attr({ "font-size": 20, "font-family": "Arial, Helvetica, sans-serif" });
+		resume();
+		
+
+}
+
+function check(){
+
+	for(var i=0; i<enemies.length; i++){
+		if(Raphael.isBBoxIntersect(circle.getBBox(), enemies[i].getBBox())){
+			//alert("weeee");
+			health-=10;
+			score-=50;
+		}
+	}
+
+}
+
+function spawn(){
+
+	var randomnumber=Math.floor(Math.random()*700)
+	
+	var temp = paper.rect(1200, randomnumber, 100,150,0); 
+	temp.attr({fill: '#800', stroke: '#840', 'stroke-width': 5});
 	enemies.push(temp);
 	//console.log(enemies[0]);
 	
 	
-},4000);
+}
 
 
-setInterval(function(){
+function gameloop(){
 
+	//console.log(circle.attrs.cy);
+	if(score < 0 || health < 10 || circle.attrs.cy > 800 || circle.attrs.cx < 0){
+		
+		stop();
+		reset();
+		console.log(enemies);
+	
+	}
+
+
+
+	if( score > 500 ){
+		speed = -6;
+	}
+	if( score > 1000 ){
+		speed = -8;
+	}
+	if( score > 1500 ){
+		speed = -9;
+	}
+	if( score > 2000 ){
+		speed = -12;
+	}
 	
 	for(var i=0; i<enemies.length; i++){
 	
-		enemies[i].translate( -4,0);
-		enemies[i].attrs.x -= 4;
+		enemies[i].translate( speed,0);
+		enemies[i].attrs.x += speed;
 		
 		if(enemies[i].attrs.x < -100){
 			//alert("gone");
@@ -108,47 +195,74 @@ setInterval(function(){
 		}
 		if(Raphael.isBBoxIntersect(circle.getBBox(), enemies[i].getBBox())){
 			//alert("weeee");
+			//health-=10;
+			//score-=50;
 		}
 	
 	}
 
-	var i = c.attrs.x - 2;
-	//console.log(c.attrs.x);
-	
-	//paper.translate( 0 , 3);	
-	
-	c.attr({
-		x: i
-	});
-	
-	if( i < -1205){
-	
-		c.attr({
-			x: 0
-		});
-		
-		i=0;
-	
-	}
-	
 
 
-	if(counter > 5){
+	if(counter > 8){
 		goingUp = false;
 		counter = 0;
 	}
 
 	if(!goingUp){
 
-		circle.translate( 0 , 3);
+		circle.translate( -2 , 5);
+		circle.attrs.cy += 5;
+		circle.attrs.cx -= 2;
+		
+		var j = c.attrs.x - 2;
+			
+	
+		c.attr({
+			x: j
+		});
+		
+		if( j < -1200){
+		
+			c.attr({
+				x: 0
+			});
+			
+			j=0;
+		
+		}
 		
 
 	}
 	else{
-		circle.translate( 0 , -5);
+		circle.translate( 4 , -7);
+		circle.attrs.cy -= 7;
+		circle.attrs.cx += 4;
+		
+		var i = c.attrs.x - 4;
+		
+	//console.log(c.attrs.x);
+	
+	//paper.translate( 0 , 3);	
+	
+		c.attr({
+			x: i
+		});
+		
+		if( i < -1200){
+		
+			c.attr({
+				x: 0
+			});
+			
+			i=0;
+		
+		}
 		counter++;
 	}
-},50);
+	t.attr('text','Score: ' + score);
+	h.attr('text','Health: ' + health);
+	score++;
+}
 
 
 	
@@ -160,6 +274,7 @@ setInterval(function(){
 <body>
 
 <div id="canvas"></div>
+<div id="sound_element"></div>
 
 
 </body>
