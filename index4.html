@@ -19,80 +19,54 @@ $(document).ready(function(){
 $('#sound_element').html("<embed src='http://harp.njit.edu/~swp5/three/Call_to_Adventure.mp3' hidden=true autostart=true loop=true>");
 
 gameModel = Backbone.Model.extend({
-        defaults: {
-            name: 'Fetus',
-            age: 0
-        },
+
         initialize: function(){
-            alert("Welcome to this world");
-            this.on("change:name", function(model){
-                var name = model.get("name"); // 'Stewie Griffin'
-                alert("Changed my name to " + name );
-            });
-        }
-});
-
-
-//gameModel.set({name: 'Stewie Griffin'});
-var circX;
-var circY;
-var goingUp = false;
-var counter = 0;
-var spawnId;
-var gameloopId;
-var checkId;
-var recentscores = [];
-var enemies = [];
-var speed = -4;
-var score = 0;
-var health = 100;
-var paper = new Raphael($('#canvas'), 0, 0);
-var c;
-/*
-var c = paper.image("background.png", 0, 0, 2400, 800);
-//paper.attr("fill", "#9cf");
-paper.setSize(1200,800);
-var circle = paper.circle(100, 50, 30); 
-circle.attr({fill: '#9cf', stroke: '#ddd', 'stroke-width': 5});
-
-//var txt = paper.print(1000, 50, "Score: " + score , paper.getFont("Arial"), 30).attr({fill: "#000"});
-var t = paper.text(1000, 50, "Score: " + score);
-var h = paper.text(50, 50, "Health: " + health);
-
-t.attr({ "font-size": 20, "font-family": "Arial, Helvetica, sans-serif" });
-h.attr({ "font-size": 20, "font-family": "Arial, Helvetica, sans-serif" });
-*/
-
-
-
-$('body').click( function(){
-
-	
-	goingUp = true;
-	
-});
-
-
-
-menu();
-//reset();
-//resume();
-
-
-
-
-function menu(){
-
-				paper.clear();
-				c = paper.image("menu.png", 0, 0, 1200, 800);
-				paper.setSize(1200,800);
 		
-                var button2 = paper.set();
-                var background2 = paper.rect(150, 525, 100, 50, 10)
+		_.bindAll(this);
+
+		console.log('');
+		this.set({circX: 0});
+
+		this.set({circY: 0});
+
+		this.set({goingUp: false});
+
+		this.set({counter: 0});
+
+		this.set({spawnId: ''});
+
+		this.set({gameloopId: ''});
+
+		this.set({checkId: ''});
+
+		this.set({recentscores: []});
+
+		this.set({enemies: []});
+
+		this.set({speed: -4});
+
+		this.set({score: 0});
+
+		this.set({health: 100});
+
+		this.set({paper: new Raphael($('#canvas'), 0, 0)});
+
+		this.set({c: ''});
+
+
+        },
+		menu: function(game){
+
+				this.get('paper').clear();
+				this.set({c: this.get('paper').image("menu.png", 0, 0, 1200, 800)});
+				this.get('paper').setSize(1200,800);
+		
+                var button2 = this.get('paper').set();
+                var background2 = this.get('paper').rect(150, 525, 100, 50, 10)
                     .attr({
                         fill: 'white'
                     });
-                var label2 = paper.text(200, 550, "SCORE");
+                var label2 = this.get('paper').text(200, 550, "SCORE");
         
                 button2.push(background2);
                 button2.push(label2);
@@ -105,24 +79,57 @@ function menu(){
                     background2.attr('fill', 'white');
                 }).mouseup(function() {
                     //THE SCORE SHEET
-                    var scoreSheet = paper.rect(0,0,1200,800)
+                    var scoreSheet = this.paper.rect(0,0,1200,800)
                         .attr ({
                             fill:"black",
                             opacity:"0.8",
                         });
-                    var scoreTitle = paper.text( 600, 100, "SCORE SHEET" )
+                    var scoreTitle = this.paper.text( 600, 100, "SCORE SHEET" )
                         .attr ({
                            "font-size": "36px",
                            "fill": "white",
                         });
-                        
+						
+					//game.get('recentscores').sort();
+					//game.get('recentscores').reverse();
+					
+					if(game.get('recentscores').length > 0){
+						
+						if(game.get('recentscores')[0]){
+							var scoreText1 = this.paper.text( 600, 300, "#1: " + game.get('recentscores')[0] )
+								.attr ({
+								   "font-size": "36px",
+								   "fill": "white",
+								});
+						}
+						if(game.get('recentscores')[1]){
+							var scoreText2 = this.paper.text( 600, 330, "#2: " + game.get('recentscores')[1] )
+								.attr ({
+								   "font-size": "36px",
+								   "fill": "white",
+								});	
+						}
+						if(game.get('recentscores')[2]){
+							var scoreText3 = this.paper.text( 600, 360, "#3: " + game.get('recentscores')[2] )
+								.attr ({
+								   "font-size": "36px",
+								   "fill": "white",
+								});
+						}				
+					}
+					else
+						var scoreText = this.paper.text( 600, 300, "Currently no scores" )
+							.attr ({
+							   "font-size": "36px",
+							   "fill": "white",
+							});
                     //the close button
-                    var button6 = paper.set();
-                    var background6 = paper.rect(150, 525, 100, 50, 10)
+                    var button6 = this.paper.set();
+                    var background6 = this.paper.rect(150, 525, 100, 50, 10)
                         .attr({
                             fill: 'white'
                         });
-                    var label6 = paper.text( 200, 550, "CLOSE");
+                    var label6 = this.paper.text( 200, 550, "CLOSE");
                     button6.push(background6);
                     button6.push(label6);
                     button6.attr({
@@ -134,17 +141,29 @@ function menu(){
                     }).mouseup(function() {
                             scoreSheet.hide();
                             scoreTitle.hide();
+							if(scoreText){
+								scoreText.hide();
+							}
+							if(scoreText1){
+								scoreText1.hide();
+							}
+							if(scoreText2){
+								scoreText2.hide();
+							}
+							if(scoreText3){
+								scoreText3.hide();
+							}
                             button6.hide();
                     });
                 });
 
 		
-                var button3 = paper.set();
-                var background3 = paper.rect(150, 350, 100, 50, 10)
+                var button3 = this.get('paper').set();
+                var background3 = this.get('paper').rect(150, 350, 100, 50, 10)
                     .attr({
                         fill: 'white'
                     });
-                var label3 = paper.text( 200, 375, "INSTRUCTION");
+                var label3 = this.get('paper').text( 200, 375, "INSTRUCTION");
         
                 button3.push(background3);
                 button3.push(label3);
@@ -157,24 +176,24 @@ function menu(){
                     background3.attr('fill', 'white');
                 }).mouseup(function() {
 		
-		            var instructionBG = paper.rect(100,100,1000,600)
+		            var instructionBG = this.paper.rect(100,100,1000,600)
                         .attr ({
                             fill:"black",
                             opacity:"0.8",
                         });
-                    var instructionText = paper.text( 600, 300, "Navigate through the \ncourse by clicking the MOUSE. \nAvoid the obstacles. \nScore increases the longer you survive. " )
+                    var instructionText = this.paper.text( 600, 300, "Navigate through the \ncourse by clicking the MOUSE. \nAvoid the obstacles. \nScore increases the longer you survive. " )
                         .attr ({
                            "font-size": "36px",
                            "fill": "white",
                         });
                         
                     //the back button
-                    var button5 = paper.set();
-                    var background5 = paper.rect(150, 525, 100, 50, 10)
+                    var button5 = this.paper.set();
+                    var background5 = this.paper.rect(150, 525, 100, 50, 10)
                         .attr({
                             fill: 'white'
                         });
-                    var label5 = paper.text( 200, 550, "BACK");
+                    var label5 = this.paper.text( 200, 550, "BACK");
                     button5.push(background5);
                     button5.push(label5);
                     button5.attr({
@@ -193,12 +212,12 @@ function menu(){
 
 				});
 				
-				var button = paper.set();
-                var background = paper.rect(150, 250, 100, 50, 10)
+				var button = this.get('paper').set();
+                var background = this.get('paper').rect(150, 250, 100, 50, 10)
                     .attr({
                         fill: 'white'
                     });
-                var label = paper.text( 200, 275, "START");
+                var label = this.get('paper').text( 200, 275, "START");
         
                 button.push(background);
                 button.push(label);
@@ -211,209 +230,236 @@ function menu(){
                     background.attr('fill', 'white');
                 }).mouseup(function() {
                     
-					reset();
-					resume();
+					game.reset();
+					game.resume();
                 }); 
 
 
 
-}
+		},
+		reset: function(){
 
-function stop(){
+			this.set({health: 100});
 
-		window.clearInterval(gameloopId);
-		window.clearInterval(spawnId);
-		window.clearInterval(checkId);
-		recentscores.unshift(score);
-		//reset();
-		//console.log(enemies);
+			this.set({score: 0});
 
+			this.set({counter: 0});
 
-}
+			this.get('paper').clear();
 
-function resume(){
-
-		spawnId = window.setInterval(spawn, 3500);
-		gameloopId = window.setInterval(gameloop, 50);
-		checkId = window.setInterval(check, 1000);
-
-
-}
-
-function reset(){
-
-		
-		health = 100;
-		score = 0;
-		counter = 0;
-		paper.clear();
-		enemies.length = 0;
-		c = paper.image("background.png", 0, 0, 2400, 800);
-		//paper.attr("fill", "#9cf");
-		paper.setSize(1200,800);
-		circle = paper.circle(100, 50, 30);
-		circX=100;
-		circY=50;
-		circle.attr({fill: '#9cf', stroke: '#ddd', 'stroke-width': 5});
-
-		//var txt = paper.print(1000, 50, "Score: " + score , paper.getFont("Arial"), 30).attr({fill: "#000"});
-		t = paper.text(1000, 50, "Score: " + score);
-		h = paper.text(50, 50, "Health: " + health);
-
-		t.attr({ "font-size": 20, "font-family": "Arial, Helvetica, sans-serif" });
-		h.attr({ "font-size": 20, "font-family": "Arial, Helvetica, sans-serif" });
-		//resume();
-		
-
-}
-
-function check(){
-
-	for(var i=0; i<enemies.length; i++){
-		if(Raphael.isBBoxIntersect(circle.getBBox(), enemies[i].getBBox())){
-			//alert("weeee");
-			health-=10;
-			score-=50;
-			//console.log("HIT");
-		}
-	}
-	
-	
-
-}
-
-function spawn(){
-
-	var randomnumber=Math.floor(Math.random()*700)
-	
-	var temp = paper.rect(1200, randomnumber, 100,150,0); 
-	temp.attr({fill: '#800', stroke: '#840', 'stroke-width': 5});
-	enemies.push(temp);
-	//console.log(enemies[0]);
-	
-	
-}
-
-
-function gameloop(){
-
-	//console.log(circle.attrs.cy);
-	if(score < 0 || health < 10 || circY > 800 || circX < 0){
-		
-		stop();
-		reset();
-		menu();
-		console.log(enemies);
-	
-	}
-
-
-
-	if( score > 500 ){
-		speed = -6;
-	}
-	if( score > 1000 ){
-		speed = -8;
-	}
-	if( score > 1500 ){
-		speed = -9;
-	}
-	if( score > 2000 ){
-		speed = -12;
-	}
-	
-	for(var i=0; i<enemies.length; i++){
-	
-		enemies[i].translate( speed,0);
-		enemies[i].attrs.x += speed;
-		
-		if(enemies[i].attrs.x < -100){
-			//alert("gone");
-			//console.log(enemies[i]);
-			enemies[i].remove();
-			//console.log(enemies[i]);
-			enemies.splice(i,1);
-			//console.log(enemies[i]);
-		
-		}
-		if(Raphael.isBBoxIntersect(circle.getBBox(), enemies[i].getBBox())){
-			//alert("weeee");
-			//health-=10;
-			//score-=50;
-			//console.log("HITZ");
-		}
-	
-	}
-
-
-
-	if(counter > 8){
-		goingUp = false;
-		counter = 0;
-	}
-
-	if(!goingUp){
-
-		circle.translate( -2 , 5);
-		circX -=2;
-		circY +=5;
-		//circle.attrs.cy += 5;
-		//circle.attrs.cx -= 2;
-		
-		var j = c.attrs.x - 2;
+			this.set({enemies: []});
 			
-	
-		c.attr({
-			x: j
-		});
-		
-		if( j < -1200){
-		
-			c.attr({
-				x: 0
-			});
+			this.set({c: this.get('paper').image("background.png", 0, 0, 2400, 800)});
+			this.get('paper').setSize(1200,800);
+
+			this.set({circle: this.get('paper').circle(100, 50, 30)});
+
+			this.set({circX: 100});
+
+			this.set({circY: 50});
 			
-			j=0;
+			
+			this.get('circle').attr({fill: '#9cf', stroke: '#ddd', 'stroke-width': 5});
+			
+			this.set({t: this.get('paper').text(1000, 50, "Score: " + this.get('score'))});
+
+			this.set({h: this.get('paper').text(50, 50, "Health: " + this.get('health'))});
+			
+			this.get('t').attr({ "font-size": 20, "font-family": "Arial, Helvetica, sans-serif" });
+
+			
+			this.get('h').attr({ "font-size": 20, "font-family": "Arial, Helvetica, sans-serif" });
+
 		
+
+		},
+		resume: function(){
+
+			this.set({spawnId: window.setInterval(this.spawn, 3500)});
+
+			this.set({gameloopId: window.setInterval(this.gameloop, 50)});
+
+			this.set({checkId: window.setInterval(this.check, 500)});
+
+
+
+		},
+		check: function(){
+
+			for(var i=0; i<this.get('enemies').length; i++){
+				if(Raphael.isBBoxIntersect(this.get('circle').getBBox(), this.get('enemies')[i].getBBox())){
+
+					this.set({health: this.get('health')-10});
+
+					this.set({score: this.get('score')-50});
+
+				}
+			}
+	
+	
+
+		},
+		spawn: function(){
+
+			var randomnumber=Math.floor(Math.random()*700)
+			
+			var temp = this.get('paper').rect(1200, randomnumber, 100,150,0); 
+			temp.attr({fill: '#800', stroke: '#840', 'stroke-width': 5});
+			this.get('enemies').push(temp);
+
+	
+	
+		},
+		gameloop: function(){
+			
+			if(this.get('score') < 0 || this.get('health') < 10 || this.get('circY') > 800 || this.get('circX') < 0 || this.get('circY') < -30){
+				
+				this.stop();
+				this.reset();
+				this.menu(this);
+
+			
+			}
+			
+
+
+			if( this.get('score') > 500 ){
+
+				this.set({speed: -6});
+			}
+			if( this.get('score') > 1000 ){
+
+				this.set({speed: -8});
+			}
+			if( this.get('score') > 1500 ){
+
+				this.set({speed: -9});
+			}
+			if( this.get('score') > 2000 ){
+
+				this.set({speed: -12});
+			}
+			
+			for(var i=0; i<this.get('enemies').length; i++){
+			
+				this.get('enemies')[i].translate( this.get('speed'),0);
+				this.get('enemies')[i].attrs.x += this.get('speed');
+				
+				if(this.get('enemies')[i].attrs.x < -100){
+
+					this.get('enemies')[i].remove();
+
+					this.get('enemies').splice(i,1);
+
+				
+				}
+			
+			}
+
+
+
+			if(this.get('counter') > 8){
+
+				this.set({goingUp: false});
+
+				this.set({counter: 0});
+			}
+
+			if(!this.get('goingUp')){
+
+				this.get('circle').translate( -2 , 5);
+				this.set({circX: this.get('circX') -2});
+
+				this.set({circY: this.get('circY') +5});
+
+				
+				var j = this.get('c').attrs.x - 2;
+					
+			
+				this.get('c').attr({
+					x: j
+				});
+				
+				if( j < -1200){
+				
+					this.get('c').attr({
+						x: 0
+					});
+					
+					j=0;
+				
+				}
+				
+
+			}
+			else{
+				this.get('circle').translate( 4 , -7);
+				
+				this.set({circX: this.get('circX') +4});
+
+				this.set({circY: this.get('circY') -7});
+
+				
+				var i = this.get('c').attrs.x - 4;
+				
+	
+			
+				this.get('c').attr({
+					x: i
+				});
+				
+				if( i < -1200){
+				
+					this.get('c').attr({
+						x: 0
+					});
+					
+					i=0;
+				
+				}
+				this.set({counter: this.get('counter') +1});
+			}
+			this.get('t').attr('text','Score: ' + this.get('score'));
+			this.get('h').attr('text','Health: ' + this.get('health'));
+			this.set({score: this.get('score') +1});
+		},
+		stop: function(){
+
+			window.clearInterval(this.get('gameloopId'));
+			window.clearInterval(this.get('spawnId'));
+			window.clearInterval(this.get('checkId'));
+			this.get('recentscores').unshift(this.get('score'));
+			console.log(this.get('recentscores'));
+
+
 		}
 		
 
-	}
-	else{
-		circle.translate( 4 , -7);
-		circX +=4;
-		circY -=7;
-		//circle.attrs.cy -= 7;
-		//circle.attrs.cx += 4;
+
 		
-		var i = c.attrs.x - 4;
+});
+
+gameView = Backbone.View.extend({
+    initialize: function(){
+        console.log('View made');
+    },
+	events: {
+        "click": "move"
+    },
+    move: function( event ){
+        game.set({goingUp: true});
+		console.log('yeah');
 		
-	//console.log(c.attrs.x);
-	
-	//paper.translate( 0 , 3);	
-	
-		c.attr({
-			x: i
-		});
-		
-		if( i < -1200){
-		
-			c.attr({
-				x: 0
-			});
-			
-			i=0;
-		
-		}
-		counter++;
-	}
-	t.attr('text','Score: ' + score);
-	h.attr('text','Health: ' + health);
-	score++;
-}
+    }
+});
+    
+    
+
+var game = new gameModel();
+var view = new gameView({ el: $("body"), game: game});
+game.menu(game);
 
 
-	
  
 });
 
